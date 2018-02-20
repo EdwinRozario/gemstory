@@ -1,5 +1,4 @@
 require 'date'
-# require 'progress'
 
 module Gemstory
   class Reader
@@ -115,7 +114,6 @@ module Gemstory
     end
 
     def call
-      # @logs.each_line.with_progress('Reading Gemfile.lock history') do |line|
       puts 'Reading Gemfile.lock history'
       @logs.each_line do |line|
         @line = line.strip
