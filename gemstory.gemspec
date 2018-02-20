@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Edwin Rozario']
   spec.email         = ['rozarioed@gmail.com']
 
-  spec.summary       = %q{CLI tool to map the history of your gems in a project}
+  spec.summary       = %q{CLI tool to map the history of gems in a project}
   spec.description   = %q{Version changes of all the Gems in a project that has a Gemfile.lock is tracked through time}
   spec.homepage      = "https://github.com/EdwinRozario/gemstory"
   spec.license       = 'MIT'
@@ -33,11 +33,12 @@ Gem::Specification.new do |spec|
   #spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'thor'
-  spec.add_dependency 'progress'
+  spec.add_runtime_dependency 'thor', '~> 0.20.0'
+  # spec.add_runtime_dependency 'progress'
 
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.7'
+  spec.add_development_dependency 'pry', '~> 0.11.3'
 end
  

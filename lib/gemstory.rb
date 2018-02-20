@@ -1,4 +1,4 @@
-require "gemstory/version"
-require "gemstory/cli"
-
-module Gemstory; end
+require 'gemstory/version'
+require 'gemstory/reader'
+require 'gemstory/printer'
+require 'gemstory/cli'

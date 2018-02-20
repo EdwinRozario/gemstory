@@ -2,11 +2,16 @@ require 'thor'
 
 module Gemstory
   class Cli < Thor
-    desc "execute", "Will print the history of your gems"
+    attr_reader :history
 
+    def initialize(argv)
+      @history = Gemstory::Reader.new
+    end
+
+    desc "execute", "Will print the history of your gems"
     def execute
-      puts 'IN RUN COMMAND'
-      puts `git log --reverse --follow -p -- Gemfile.lock`
+      @history.call
+      Gemstory::Printer.new(@history).call
     end
   end
 end

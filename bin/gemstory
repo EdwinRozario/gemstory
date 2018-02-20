@@ -2,6 +2,4 @@
 
 require 'gemstory'
 
-puts 'At the bin file'
-
 Gemstory::Cli.new(ARGV).execute

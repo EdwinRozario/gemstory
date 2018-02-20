@@ -1,6 +1,5 @@
 require 'date'
-# require 'pry'
-require 'progress'
+# require 'progress'
 
 module Gemstory
   class Reader
@@ -116,7 +115,9 @@ module Gemstory
     end
 
     def call
-      @logs.each_line.with_progress('Reading Gemfile.lock history') do |line|
+      # @logs.each_line.with_progress('Reading Gemfile.lock history') do |line|
+      puts 'Reading Gemfile.lock history'
+      @logs.each_line do |line|
         @line = line.strip
         
         next if commit?
@@ -126,46 +127,4 @@ module Gemstory
       end
     end    
   end
-
-  class Printer
-    attr_reader :history
-
-    STATUS_CODE = { up: " \u2191 ", down: " \u2193 ", next: "   \u2192   " }
-
-    def initialize(history)
-      @history = history
-    end
-
-    def call
-      @history.history.sort.each do |name, changes|
-        print "#{name}"
-
-        (@history.max_gem_name_size - name.to_s.length).times { print ' ' }
-        
-        print ":  "
-        
-        changes.each do |change|
-          date_string = change[:date].strftime('%d.%m.%Y')
-
-          progress = nil
-
-          unless changes.index(change).zero?
-            print STATUS_CODE[:next]
-          end
-
-          print "#{change[:version]}#{STATUS_CODE[change[:change]]}(#{date_string})"
-        end
-
-        puts ' '
-      end
-    end
-  end
 end
-
-# gr = Gemstory::Reader.new
-# gr.call
-
-# # binding.pry
-
-# gp = Gemstory::Printer.new(gr)
-# gp.call
