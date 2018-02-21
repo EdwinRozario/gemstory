@@ -11,7 +11,7 @@ Run `gemstory` in your project root folder. This will return the history of Gem 
 
 #### Options
 
-A single Gem name can be passed as an option. This will return details information about the Gem history, commits and authors.
+A single Gem name can be passed as an option. This will return detailed information about the Gem's history, commits and authors.
 
 `gemstory rails`
 
