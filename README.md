@@ -1,5 +1,5 @@
 # Gemstory
-Gemstory tells the history of gems in your project. Its a command line tool that will read the history of the Gemfile.lock and project the output in terminal.
+Gemstory tells the history of the Gems in your project. Its a command line tool that will read the history of the Gemfile.lock and project the output in terminal.
 
 ## Installation
 
