@@ -2,7 +2,6 @@ PATH
   remote: .
   specs:
     gemstory (0.1.0.beta3)
-      pry (~> 0.11.3)
       thor (~> 0.20.0)
 
 GEM

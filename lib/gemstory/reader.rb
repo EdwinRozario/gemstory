@@ -3,15 +3,15 @@ require 'date'
 module Gemstory
   class Reader
     attr_reader :logs, :line, :date, :max_gem_name_size,
-                :commit, :section, :history, :author
+                :commit, :history, :author, :requested_gems
 
-    SECTIONS = %w[GEM PLATFORMS DEPENDENCIES BUNDLED\ WITH].freeze
-
-    def initialize
+    def initialize(gems = [])
+      @requested_gems = gems
       @max_gem_name_size = 0
+
       puts 'Reading Gemfile.lock history'
       @logs = `git log --reverse --follow -p -- Gemfile.lock`
-      @log_count = `git rev-list --all --count Gemfile.lock`
+
       @history = {}
     end
 
@@ -25,11 +25,15 @@ module Gemstory
       gem_name_part = ruby_gem.match(/(.*)(?= \()/)
       
       if gem_name_part
-        gem_name = gem_name_part[0] 
+        gem_name = gem_name_part[0]
         version = ruby_gem.match(/(?<=\()(.*?)(?=\))/)[0]
       else
         gem_name = ruby_gem
         version = nil
+      end
+
+      unless @requested_gems.empty?
+        return unless @requested_gems.include? gem_name
       end
 
       @max_gem_name_size = gem_name.length if gem_name.length > @max_gem_name_size
@@ -84,7 +88,7 @@ module Gemstory
     def call
       puts 'Processing history'
       puts ''
-      
+
       @logs.each_line do |line|
         @line = line.strip
         
