@@ -1,21 +1,21 @@
 # Gemstory
-Gemstory tells the story of gems in your project. Its a command line tool that will read the history of the Gemfile.lock and project the output in terminal.
+Gemstory tells the history of gems in your project. Its a command line tool that will read the history of the Gemfile.lock and project the output in terminal.
 
 ## Installation
 
-    $ gem install gemstory --pre
+    $ gem install gemstory
 
 ## Usage
 
-Run `gemstory` in your project root folder.
+Run `gemstory` in your project root folder. This will return the history of Gem upgrades of the project.
 
-### Options
+#### Options
 
-A single gem name can be passed as an option
+A single Gem name can be passed as an option. This will return details information about the Gem history, commits and authors.
 
 `gemstory rails`
 
-Or multiple gems can be passed as options
+Or multiple Gems can be passed as options so that history can be compared.
 
 `gemstory rails thin`
 
@@ -26,7 +26,7 @@ More CLI options are under construction. Output can be a json file or an HTML fi
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/gemstory. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/EdwinRozario/gemstory. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
