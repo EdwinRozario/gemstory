@@ -7,11 +7,21 @@ Gemstory tells the story of gems in your project. Its a command line tool that w
 
 ## Usage
 
-Rub `gemstory` in your project root folder
+Run `gemstory` in your project root folder.
+
+### Options
+
+A single gem name can be passed as an option
+
+`gemstory rails`
+
+Or multiple gems can be passed as options
+
+`gemstory rails thin`
 
 ## Development
 
-This gem is at a beta state now. More CLI options are under construction. Output can be a json file or an HTML file in the future
+More CLI options are under construction. Output can be a json file or an HTML file in the future.
 
 
 ## Contributing
