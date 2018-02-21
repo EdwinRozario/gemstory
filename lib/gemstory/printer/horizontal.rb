@@ -1,28 +1,12 @@
 module Gemstory
   module Printer
     class Horizontal
-      attr_reader :history
+      include Helpers
 
-      STATUS_CODE = { up: " \u2191 ", down: " \u2193 ", next: "   \u2192   " }
+      attr_reader :history
 
       def initialize(history)
         @history = history
-      end
-
-      def compare_version(current_version, last_version)
-        last_version = Gem::Version.new(last_version)
-        current_version = Gem::Version.new(current_version)
-
-        if last_version < current_version 
-          :up
-        elsif last_version > current_version
-          :down
-        else
-          :same
-        end
-      
-      rescue
-        :up
       end
 
       def call
@@ -37,7 +21,7 @@ module Gemstory
             version_status = :up
 
             unless changes.index(change).zero?
-              print STATUS_CODE[:next]
+              print status_code[:next]
 
               current_version = change[:version]
               last_version = changes[changes.index(change) - 1][:version]
@@ -46,7 +30,7 @@ module Gemstory
 
             date_string = change[:date].strftime('%d.%m.%Y')
 
-            print "#{change[:version]}#{STATUS_CODE[version_status]}(#{date_string})"
+            print "#{change[:version]}#{status_code[version_status]}(#{date_string})"
           end
 
           puts ' '
