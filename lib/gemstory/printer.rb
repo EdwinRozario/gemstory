@@ -8,6 +8,22 @@ module Gemstory
       @history = history
     end
 
+    def compare_version(current_version, last_version)
+      last_version = Gem::Version.new(last_version)
+      current_version = Gem::Version.new(current_version)
+
+      if last_version < current_version 
+        :up
+      elsif last_version > current_version
+        :down
+      else
+        :same
+      end
+    
+    rescue
+      :up
+    end
+
     def call
       @history.history.sort.each do |name, changes|
         print "#{name}"
@@ -17,13 +33,19 @@ module Gemstory
         print ":  "
         
         changes.each do |change|
-          date_string = change[:date].strftime('%d.%m.%Y')
+          version_status = :up
 
           unless changes.index(change).zero?
             print STATUS_CODE[:next]
+
+            current_version = change[:version]
+            last_version = changes[changes.index(change) - 1][:version]
+            version_status = compare_version(current_version, last_version)
           end
 
-          print "#{change[:version]}#{STATUS_CODE[change[:change]]}(#{date_string})"
+          date_string = change[:date].strftime('%d.%m.%Y')
+
+          print "#{change[:version]}#{STATUS_CODE[version_status]}(#{date_string})"
         end
 
         puts ' '

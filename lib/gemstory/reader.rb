@@ -3,39 +3,19 @@ require 'date'
 module Gemstory
   class Reader
     attr_reader :logs, :line, :date, :max_gem_name_size,
-                :commit, :section, :history, :dates, :log_count
+                :commit, :section, :history, :author
 
     SECTIONS = %w[GEM PLATFORMS DEPENDENCIES BUNDLED\ WITH].freeze
 
     def initialize
-      @dates = []
       @max_gem_name_size = 0
+      puts 'Reading Gemfile.lock history'
       @logs = `git log --reverse --follow -p -- Gemfile.lock`
       @log_count = `git rev-list --all --count Gemfile.lock`
       @history = {}
     end
 
-    def compare_version(gem_name, version)
-      return :up if @history[gem_name].empty?
-
-      last_version = Gem::Version.new(@history[gem_name].last[:version])
-      current_version = Gem::Version.new(version)
-
-
-      if last_version < current_version 
-        :up
-      elsif last_version > current_version
-        :down
-      else
-        false
-      end
-    
-    rescue
-      :up
-    end
-
     def add_line
-      return unless gem?
       ruby_gem = line.slice(1, 1000)
       tab_length = ruby_gem[/\A */].size
 
@@ -54,17 +34,10 @@ module Gemstory
 
       @max_gem_name_size = gem_name.length if gem_name.length > @max_gem_name_size
 
-      version_status = compare_version(gem_name.to_sym, version)
-      
-      return unless version_status
-
       @history[gem_name.to_sym] ||= []
 
       @history[gem_name.to_sym] << { date: @date, commit: @commit,
-                                     version: version, change: version_status,
-                                     hierarchy: tab_length }
-
-      @history[gem_name.to_sym] = @history[gem_name.to_sym].sort_by { |changes| changes[:date] }
+                                     version: version, author: @author }
     end
 
     def gem?
@@ -75,12 +48,22 @@ module Gemstory
       @line.match(/^\+ /)
     end
 
+    def author?
+      matches = @line.match(/(?<=^Author: )(.*)/)
+
+      if matches
+        @author = matches[0]
+        true
+      else
+        false
+      end
+    end
+
     def date?
       matches = @line.match(/(?<=^Date: )(.*)/)
 
       if matches
         @date = Date.parse(matches[0])
-        @dates << @date
         true
       else
         false
@@ -98,31 +81,32 @@ module Gemstory
       end
     end
 
-    def section?
-      sections = SECTIONS.map { |section| section if line.include? section }.compact
-      
-      unless sections.empty?
-        @section = sections.first
-        true
-      else
-        false
-      end
-    end
-
-    def categorize
-      section
-    end
-
     def call
-      puts 'Reading Gemfile.lock history'
+      puts 'Processing history'
+      puts ''
+      
       @logs.each_line do |line|
         @line = line.strip
         
         next if commit?
         next if date?
+        next if author?
 
-        add_line if new_line?
+        add_line if new_line? && gem?
       end
+
+      @history.each do |gem_name, commits|
+        sorted_commits = commits.sort_by { |commit| commit[:date] }
+
+        @history[gem_name] = sorted_commits.each_with_index.map do |commit, index|
+          if index.zero?
+            commit
+          else
+            commit unless commit[:version] == sorted_commits[index - 1][:version]
+          end
+        end.compact
+      end
+
     end    
   end
 end
