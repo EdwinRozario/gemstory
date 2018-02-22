@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Gemstory
   module Printer
+    # Prints history vertically
     class Horizontal
       include Helpers
 
@@ -10,27 +13,27 @@ module Gemstory
       end
 
       def call
-        @history.history.sort.each do |name, changes|
-          print "#{name}"
+        @history.history.sort.each do |gem_name, commits|
+          print gem_name.to_s
 
-          (@history.max_gem_name_size - name.to_s.length).times { print ' ' }
-          
-          print ":  "
-          
-          changes.each do |change|
+          (@history.max_gem_name_size - gem_name.length).times { print ' ' }
+
+          print ':  '
+
+          commits.each_with_index do |commit, index|
             version_status = :up
+            current_version = commit[:version]
 
-            unless changes.index(change).zero?
+            unless index.zero?
               print status_code[:next]
 
-              current_version = change[:version]
-              last_version = changes[changes.index(change) - 1][:version]
+              last_version = commits[index - 1][:version]
               version_status = compare_version(current_version, last_version)
             end
 
-            date_string = change[:date].strftime('%d.%m.%Y')
+            date_string = commit[:date].strftime('%d.%m.%Y')
 
-            print "#{change[:version]}#{status_code[version_status]}(#{date_string})"
+            print "#{current_version}#{status_code[version_status]}(#{date_string})"
           end
 
           puts ' '
