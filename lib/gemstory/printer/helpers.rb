@@ -20,8 +20,8 @@ module Gemstory
       end
 
       def status_code
-        { up: " \033[0;32m  \u2191 \033[0;m ",
-          down: " \033[0;31m  \u2193 \033[0;m ",
+        { up: " \033[0;32m\u2191\033[0;m ",
+          down: " \033[0;31m\u2193\033[0;m ",
           next: " \033[0;34m \u2192 \033[0;m " }
       end
     end
