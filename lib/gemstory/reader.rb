@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require 'date'
 
 module Gemstory
+  # Reads the git logs and produce and Hash
   class Reader
     attr_reader :logs, :line, :date, :max_gem_name_size,
                 :commit, :history, :author, :requested_gems
@@ -23,37 +26,35 @@ module Gemstory
 
       ruby_gem.strip!
       gem_name_part = ruby_gem.match(/(.*)(?= \()/)
-      
+
       if gem_name_part
-        gem_name = gem_name_part[0]
+        gem_name = gem_name_part[0].to_sym
         version = ruby_gem.match(/(?<=\()(.*?)(?=\))/)[0]
       else
-        gem_name = ruby_gem
+        gem_name = ruby_gem.to_sym
         version = nil
       end
 
       unless @requested_gems.empty?
-        return unless @requested_gems.include? gem_name
+        return unless @requested_gems.include? gem_name.to_s
       end
 
       @max_gem_name_size = gem_name.length if gem_name.length > @max_gem_name_size
-
-      @history[gem_name.to_sym] ||= []
-
-      @history[gem_name.to_sym] << { date: @date, commit: @commit,
-                                     version: version, author: @author }
+      @history[gem_name] ||= []
+      @history[gem_name] << { date: date, commit: commit,
+                                     version: version, author: author }
     end
 
     def gem?
-      @line.match(/(.*)(\()(.*?)(\))/)
+      line.match(/(.*)(\()(.*?)(\))/)
     end
 
     def new_line?
-      @line.match(/^\+ /)
+      line.match(/^\+ /)
     end
 
     def author?
-      matches = @line.match(/(?<=^Author: )(.*)/)
+      matches = line.match(/(?<=^Author: )(.*)/)
 
       if matches
         @author = matches[0]
@@ -64,7 +65,7 @@ module Gemstory
     end
 
     def date?
-      matches = @line.match(/(?<=^Date: )(.*)/)
+      matches = line.match(/(?<=^Date: )(.*)/)
 
       if matches
         @date = Date.parse(matches[0])
@@ -75,7 +76,7 @@ module Gemstory
     end
 
     def commit?
-      matches = @line.match(/(?<=^commit )(.*)/)
+      matches = line.match(/(?<=^commit )(.*)/)
 
       if matches
         @commit = matches[0]
@@ -91,7 +92,7 @@ module Gemstory
 
       @logs.each_line do |line|
         @line = line.strip
-        
+
         next if commit?
         next if date?
         next if author?
@@ -110,7 +111,6 @@ module Gemstory
           end
         end.compact
       end
-
-    end    
+    end
   end
 end
