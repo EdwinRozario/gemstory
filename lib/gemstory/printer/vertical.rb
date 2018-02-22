@@ -34,7 +34,7 @@ module Gemstory
 
             date_string = commit[:date].strftime('%d.%m.%Y')
 
-            puts "#{status_code[version_status]}  #{current_version.light_blue}  #{date_string.yellow}  #{commit[:commit].magenta}  #{commit[:author].cyan}"
+            puts "#{status_code[version_status]}  #{current_version}  #{date_string}  #{commit[:commit]}  #{commit[:author]}"
           end
         end
       end
