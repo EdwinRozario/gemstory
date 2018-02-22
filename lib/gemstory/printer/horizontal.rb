@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'colourize'
-
 module Gemstory
   module Printer
     # Prints history vertically
@@ -16,7 +14,7 @@ module Gemstory
 
       def call
         @history.history.sort.each do |gem_name, commits|
-          print gem_name.to_s.blue
+          print "\033[0;33m#{gem_name}\033[0;m"
 
           (@history.max_gem_name_size - gem_name.length).times { print ' ' }
 
