@@ -20,7 +20,7 @@ module Gemstory
       end
 
       def status_code
-        { up: " \u2191 ", down: " \u2193 ", next: "   \u2192   " }
+        { up: " \u2191 ".green, down: " \u2193 ".red, next: "   \u2192   ".blue }
       end
     end
   end

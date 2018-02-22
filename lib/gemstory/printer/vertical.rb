@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'colourize'
+
 module Gemstory
   module Printer
     # Prints hostory of a single gem verticalling through commits
@@ -18,7 +20,7 @@ module Gemstory
         else
           gem_name, commits = @history.first
 
-          puts gem_name
+          puts gem_name.to_s.blue
           puts ' '
 
           commits.each_with_index do |commit, index|
@@ -32,7 +34,7 @@ module Gemstory
 
             date_string = commit[:date].strftime('%d.%m.%Y')
 
-            puts "#{status_code[version_status]}  #{current_version}  #{date_string}  #{commit[:commit]}  #{commit[:author]}"
+            puts "#{status_code[version_status]}  #{current_version.light_blue}  #{date_string.yellow}  #{commit[:commit].magenta}  #{commit[:author].cyan}"
           end
         end
       end

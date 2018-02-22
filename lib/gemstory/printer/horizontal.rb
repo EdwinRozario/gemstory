@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'colourize'
+
 module Gemstory
   module Printer
     # Prints history vertically
@@ -14,7 +16,7 @@ module Gemstory
 
       def call
         @history.history.sort.each do |gem_name, commits|
-          print gem_name.to_s
+          print gem_name.to_s.blue
 
           (@history.max_gem_name_size - gem_name.length).times { print ' ' }
 
@@ -33,7 +35,7 @@ module Gemstory
 
             date_string = commit[:date].strftime('%d.%m.%Y')
 
-            print "#{current_version}#{status_code[version_status]}(#{date_string})"
+            print "#{current_version.light_blue}#{status_code[version_status]}(#{date_string.yellow})"
           end
 
           puts ' '
