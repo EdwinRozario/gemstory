@@ -34,8 +34,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'thor', '~> 0.20.0'
+  spec.add_runtime_dependency 'sorbet-runtime', '~> 0.5.6130'
 
-  spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'sorbet', '~> 0.5.6130'
+  spec.add_development_dependency 'bundler', '~> 2'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.7'
   spec.add_development_dependency 'pry', '~> 0.11.3'

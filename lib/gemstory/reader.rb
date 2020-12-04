@@ -1,6 +1,15 @@
+# typed: false
 # frozen_string_literal: true
 
 require 'date'
+
+# module Gemstory
+#   module GitCommand
+#     def follow_log
+#       `git log --reverse --follow -p -- Gemfile.lock`
+#     end
+#   end
+# end
 
 module Gemstory
   # Reads the git logs and produce and Hash
@@ -13,77 +22,9 @@ module Gemstory
       @max_gem_name_size = 0
 
       puts 'Reading Gemfile.lock history'
-      @logs = `git log --reverse --follow -p -- Gemfile.lock`
+      @logs = follow_log
 
       @history = {}
-    end
-
-    def add_line
-      ruby_gem = line.slice(1, 1000)
-      tab_length = ruby_gem[/\A */].size
-
-      return unless tab_length == 4
-
-      ruby_gem.strip!
-      gem_name_part = ruby_gem.match(/(.*)(?= \()/)
-
-      if gem_name_part
-        gem_name = gem_name_part[0].to_sym
-        version = ruby_gem.match(/(?<=\()(.*?)(?=\))/)[0]
-      else
-        gem_name = ruby_gem.to_sym
-        version = nil
-      end
-
-      unless @requested_gems.empty?
-        return unless @requested_gems.include? gem_name.to_s
-      end
-
-      @max_gem_name_size = gem_name.length if gem_name.length > @max_gem_name_size
-      @history[gem_name] ||= []
-      @history[gem_name] << { date: date, commit: commit,
-                                     version: version, author: author }
-    end
-
-    def gem?
-      line.match(/(.*)(\()(.*?)(\))/)
-    end
-
-    def new_line?
-      line.match(/^\+ /)
-    end
-
-    def author?
-      matches = line.match(/(?<=^Author: )(.*)/)
-
-      if matches
-        @author = matches[0]
-        true
-      else
-        false
-      end
-    end
-
-    def date?
-      matches = line.match(/(?<=^Date: )(.*)/)
-
-      if matches
-        @date = Date.parse(matches[0])
-        true
-      else
-        false
-      end
-    end
-
-    def commit?
-      matches = line.match(/(?<=^commit )(.*)/)
-
-      if matches
-        @commit = matches[0]
-        true
-      else
-        false
-      end
     end
 
     def call
@@ -112,5 +53,82 @@ module Gemstory
         end.compact
       end
     end
+
+    private
+
+      def follow_log
+        `git log --reverse --follow -p -- Gemfile.lock`
+      end
+
+      def add_line
+        ruby_gem = line.slice(1, 1000)
+        tab_length = ruby_gem[/\A */].size
+
+        return unless tab_length == 4
+
+        ruby_gem.strip!
+        gem_name_part = ruby_gem.match(/(.*)(?= \()/)
+
+        if gem_name_part
+          gem_name = gem_name_part[0].to_sym
+          version = ruby_gem.match(/(?<=\()(.*?)(?=\))/)[0]
+        else
+          gem_name = ruby_gem.to_sym
+          version = nil
+        end
+
+        unless @requested_gems.empty?
+          return unless @requested_gems.include? gem_name.to_s
+        end
+
+        @max_gem_name_size = gem_name.length if gem_name.length > @max_gem_name_size
+        @history[gem_name] ||= []
+        @history[gem_name] << { date: date, commit: commit,
+                                       version: version, author: author }
+      end
+
+      def gem?
+        line.match(/(.*)(\()(.*?)(\))/)
+      end
+
+      def new_line?
+        line.match(/^\+ /)
+      end
+
+      def author?
+        matches = line.match(/(?<=^Author: )(.*)/)
+
+        if matches
+          @author = matches[0]
+          true
+        else
+          false
+        end
+      end
+
+      def date?
+        matches = line.match(/(?<=^Date: )(.*)/)
+
+        if matches
+          @date = Date.parse(matches[0])
+          true
+        else
+          false
+        end
+      end
+
+      def commit?
+        matches = line.match(/(?<=^commit )(.*)/)
+
+        if matches
+          @commit = matches[0]
+          true
+        else
+          false
+        end
+      end
   end
 end
+
+# p "====================================="
+# p Gemstory::Reader.new.call

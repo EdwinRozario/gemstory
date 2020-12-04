@@ -1,3 +1,4 @@
+# typed: false
 # frozen_string_literal: true
 
 require 'thor'
@@ -10,13 +11,15 @@ module Gemstory
     def initialize(argv)
       @history = Reader.new(argv)
 
-      @printer = if argv.empty?
-                   Printer::Horizontal
-                 elsif argv.length == 1
-                   Printer::Vertical
-                 else
-                   Printer::Horizontal
-                 end
+      @printer = argv.length == 1 ? Printer::Vertical : Printer::Horizontal
+
+      # @printer = if argv.empty?
+      #              Printer::Horizontal
+      #            elsif argv.length == 1
+      #              Printer::Vertical
+      #            else
+      #              Printer::Horizontal
+      #            end
     end
 
     desc 'execute', 'Will print the history of your gems'
@@ -27,3 +30,4 @@ module Gemstory
     end
   end
 end
+
