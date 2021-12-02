@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['rozarioed@gmail.com']
 
   spec.summary       = %q{CLI tool to map the history of gems in a project}
-  spec.description   = %q{Version changes of all the Gems in a project that has a Gemfile.lock is tracked through time}
+  spec.description   = %q{Version changes of all the Gems in a project that has a Gemfile.lock is displayed with a timeline}
   spec.homepage      = "https://github.com/EdwinRozario/gemstory"
   spec.license       = 'MIT'
 
@@ -28,15 +28,13 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
-  # spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  #spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'thor', '~> 0.20.0'
+  spec.add_runtime_dependency 'thor', '~> 1.1.0'
 
   spec.add_development_dependency 'bundler', '~> 1.16'
-  spec.add_development_dependency 'rake', '~> 10.0'
-  spec.add_development_dependency 'rspec', '~> 3.7'
-  spec.add_development_dependency 'pry', '~> 0.11.3'
+  spec.add_development_dependency 'rake', '~> 13.0.6'
+  spec.add_development_dependency 'rspec', '~> 3.10.0'
+  spec.add_development_dependency 'pry', '~> 0.14.1'
 end
